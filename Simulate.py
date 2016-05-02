@@ -22,9 +22,6 @@ import pandas as pd
 import numpy as np
 
 # input parameters
-n_properties = 10
-n_species = 100
-n_group = 3
 
 def simulate_species_properties(n_properties=10,n_species=100,n_group=3):
     # assign group index randomly
@@ -45,8 +42,7 @@ def simulate_species_properties(n_properties=10,n_species=100,n_group=3):
 
 if __name__ == "__main__":
     species_prop, gp_sign, gp_break = simulate_species_properties()
-    print('I just run')
-
+    species_prop.to_csv('Species_properites_likelihood.csv')
 
     
     
