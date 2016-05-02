@@ -28,7 +28,9 @@ E.g. *"likes burgers", "likes mushrooms"*
 
 ## 2. Data
 
-We are going to use simulated data that represents rows of genes with columns of condition expression. Simulated data comes from a number of parameters of gene-properties-transcript relationships / complex. 
+We are going to use simulated data that represents rows of genes with columns of condition expression. Simulated data comes from a number of parameters of gene-properties-transcript relationships / complex.
+
+Setting 10 target labels (10 multi-class predictor probabilities). 
 
 ## 3. Model Approaches
 
