@@ -3,6 +3,7 @@ Takes in a matrix of organism properties and simulates gene expression distribut
 
 """
 
+import sys
 import scipy
 from scipy import stats
 from scipy import special
@@ -12,6 +13,46 @@ from numpy import random
 import pandas as pd
 import matplotlib.pyplot as plt
 import palettable as pal
+import argparse
+
+# input parameters
+
+def simulate_species_properties(n_props, n_species, n_group):
+	"""
+	Simulate organism properites in a matrix, where the columns are the transcripts
+	and the rows are the species.
+
+	inputs:
+	n_transcripts: number of transcripts/genes, ~50k
+	n_species: number of species, >100
+	prop_core: proportions of genes that are present in all species, ~10% of species
+
+	n_props: ~10
+	n_species: ~100
+	n_group: ~3, the number of similar species in groups for each properties,
+	 like phylum
+
+	outputs:
+	species_prop: a matrix of values [0-1] measuring the intensity of properties
+	 each species have. Species stands for row, and properties are in the head of
+	 each column.
+	"""
+    # assign group index randomly
+	gp_sign = pd.DataFrame(np.random.randint(n_group, size=(n_species,n_props)))
+
+    # assign break in the property range randomly
+	gp_break = np.random.random([n_props, n_group, 2])
+
+    # generate matrix according to group and threshold
+	species_prop = gp_sign.copy() # actual intensity of the properties
+	for i in range(n_props):
+	    for j in range(n_species):
+	        group_num = gp_sign.iloc[j,i]
+	        species_prop.iloc[j,i] = np.random.uniform(gp_break[i, group_num].min(),
+	                                                       gp_break[i,group_num].max())
+
+	return species_prop, gp_sign, gp_break
+
 
 def read_input(input):
 	# Creates a pandas dataframe with species as row, properties as cols
@@ -19,76 +60,118 @@ def read_input(input):
 	df = pd.DataFrame.from_csv(input)
 	return df
 
-def property_beta_distribution(n_properties):
+def property_beta_distribution(n_props):
 	# Samples from beta probability distribution
-	# Output: matrix of probabilities (size n_properties)
+	# Output: matrix of probabilities (size n_props)
 
-	property_probs = beta.rvs(1,5,size = n_properties)
+	property_probs = beta.rvs(1, 5, size = n_props)
 	probabilities = np.array(property_probs)
-	probs_shape = probabilities.reshape(1,n_properties)
+	probs_shape = probabilities.reshape(1, n_props)
 	return probs_shape
 
 
 def gene_beta_distribution(n_genes):
 	# Samples from beta probability distribution
-    	# Output: matrix of probabilities (size n_genes)
+	# Output: matrix of probabilities (size n_genes)
 
 	gene_probs = beta.rvs(5, 5, size = n_genes)
 	genes = np.array(gene_probs)
-	properties_genes = genes.reshape(n_genes,1)
+	properties_genes = genes.reshape(n_genes, 1)
 	return properties_genes
-	
+
 
 def coin_toss(probability_distribution):
 	# Samples from binomial distribution
-	
+
 	coin_toss_data = scipy.stats.binom.rvs(1,probability_distribution)
 	return coin_toss_data
 
-def norm_distribution(coin_toss_data,n_genes,n_properties):
+def norm_distribution(coin_toss_data, n_genes, n_props):
 	# Samples from a normal (Gaussian) distribution, for all coin_toss data
 
 	effect = random.normal(size=np.size(coin_toss_data))
-	effect_shape = effect.reshape(n_genes,n_properties)
-	mult = pd.DataFrame(effect_shape * coin_toss_data)
-	return mult
+	effect_shape = effect.reshape(n_genes,n_props)
+	species_genes = pd.DataFrame(effect_shape * coin_toss_data)
+	return species_genes
 
-def get_counts(species_properties,mult):
+def get_counts(species_properties, species_genes, multi_fact, add_fact, num_flips):
 	# Calculates slope from product of species properties data and distribution sampling
 
-	mult_t = mult.transpose()
-	property_effects = np.dot(species_properties, mult_t)
+	species_genes_t = species_genes.transpose()
+	property_effects = np.dot(species_properties, species_genes_t)
 	# Use exp to ensure that all the counts will be positive
-	expected_counts = np.exp(property_effects*6 + 2)
+	expected_counts = np.exp(property_effects * multi_fact + add_fact)
 	# Define negative binomial parameters, n and p
-	n = 2
-	p = n / (n + expected_counts)
+	p = num_flips / (num_flips + expected_counts)
 	# Randomly fill in the observed counts with negative binomial based on n and p
 	counts = expected_counts * 0 # start empty
 	for i in range(0, counts.shape[0]):
-  		counts[i] = scipy.stats.nbinom.rvs(n=n, p=p[i], size = expected_counts.shape[1])
-	
-	count_df = pd.DataFrame(counts, dtype="int")	
+		counts[i] = scipy.stats.nbinom.rvs(n = num_flips, p = p[i], size = expected_counts.shape[1])
+	count_df = pd.DataFrame(counts, dtype="int")
 	return count_df
 
-def execute(input_file,n_genes):
-	# Main code:
+if __name__ == "__main__":
 
-	species_properties= read_input(input_file)
-	n_properties=len(species_properties.axes[1])	
-	properties=property_beta_distribution(n_properties)
-	genes=gene_beta_distribution(n_genes)
-	probability_distribution = np.dot(genes,properties)
-	coin_toss_data = coin_toss(probability_distribution)	
-	mult = norm_distribution(coin_toss_data,n_genes,n_properties)
-	counts = get_counts(species_properties,mult)
-	print counts
-	return counts
+	parser = argparse.ArgumentParser()
 
+	# >>> python simulate_counts.py -o FILE_NAME -ng NUM_GENES -ns NUM_SPECIES -np NUM_PROPS
+	# ... -mf MULTIPLICATIVE_FACTOR -af ADDITIVE_FACTOR -nf NUMBER_BINOMIAL_FLIPS
+	parser.add_argument("-o", "--output", help = "Set output file name")
+	parser.add_argument("-ng", "--n_genes", help = "Set number of genes", type = int)
+	parser.add_argument("-ns", "--n_species", help = "Set number of species", type = int)
+	parser.add_argument("-np", "--n_props", help = "Set the number of hidden genetic properties in the species to be discovered", type = int)
+	parser.add_argument("-mf", "--multi_fact", help = "Set multiplicative factor for negative binomial distribution", type = int)
+	parser.add_argument("-af", "--add_fact", help = "Set additive factor for negative binomial distribution")
+	parser.add_argument("-nf", "--num_flips", help = "Set number of flips for negative binomial distribution")
 
-input_file = "Species_properites_likelihood.csv"  
-n_genes = 10000
-counts = execute(input_file,n_genes) 
-counts.to_csv("simulated_counts.csv")
-print "Hell yeah! Counts simulated."
-print "File: simulated_counts.csv"
+	args = parser.parse_args()
+
+	if args.n_genes is None:
+		n_genes = 3
+	else:
+		n_genes = int(args.n_genes)
+
+	if args.n_species is None:
+		n_species = 100
+	else:
+		n_species = int(args.n_species)
+
+	if args.n_props is None:
+		n_props = 10
+	else:
+		n_props = int(args.n_props)
+
+	if args.multi_fact is None:
+		multi_fact = 6
+	else:
+		multi_fact = int(args.multi_fact)
+
+	if args.add_fact is None:
+		add_fact = 2
+	else:
+		add_fact = int(args.add_fact)
+
+	if args.num_flips is None:
+		num_flips = 2
+	else:
+		num_flips = int(args.num_flips)
+
+	try:
+		#species_properties = read_input(input_file)
+		species_prop, gp_sign, gp_break = simulate_species_properties(n_props, n_species, n_genes)
+		n_props = len(species_prop.axes[1])
+		properties = property_beta_distribution(n_props)
+		genes = gene_beta_distribution(n_genes)
+		probability_distribution = np.dot(genes, properties)
+		coin_toss_data = coin_toss(probability_distribution)
+		species_genes = norm_distribution(coin_toss_data, n_genes, n_props)
+		counts = get_counts(species_prop, species_genes, multi_fact, add_fact, num_flips)
+		print("Finished main - counts: ", counts)
+
+	except IOError as e:
+		print "I/O error({0}): {1}".format(e.errno, e.strerror)
+	except ValueError:
+		print "Some value error."
+	except:
+		print "Unexpected error:", sys.exc_info()[0]
+		raise
