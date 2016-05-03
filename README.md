@@ -1,23 +1,25 @@
 <strong>MDI Biological Labs. Barnraising workshop - (Maine) May 2016</strong>
 
-This project is a collaborative effort between Lisa (Titus group - UC Davis), Harriet (Titus group - UC Davis), Dave Harris (U. Florida), Young (Princeton), and Oliver Muellerklein (me - Wayne Getz's group at UC Berkeley). We are working on a way to model structure in pathway emergence from a dataset of
+This project is a collaborative effort between Lisa (Titus group - UC Davis), Harriet (Titus group - UC Davis), Dave Harris (U. Florida), Yuan (Princeton), and Oliver Muellerklein (me - Wayne Getz's group at UC Berkeley). We are working on a way to model structure in pathway emergence from a dataset of
 
 # Structure / Pathway Discovery
 
-Have a set of organisms. Have rows of genes. Columns of conditions / specifications / etc per gene. Background: perhaps there are pathways of gene expression we could discover that relate to a species / organism liking burgers and another pathway of genes that relate to liking mushrooms. There can be overlap in genes in pathways for liking burgers and liking mushrooms. So each set of pathways can be an
+Have a set of organisms. Have rows of genes. Columns of conditions / specifications / etc per gene. Background: perhaps there are pathways of gene expression we could discover that relate to a species / organism liking burgers and another pathway of genes that relate to liking mushrooms. There can be overlap in genes in pathways for liking burgers and liking mushrooms. So each set of genes / pathway can exist independently.
 
 ## 1. Summary / Overview
 
-<strong>To-Do:</strong>
+### 1.1 Group To Do
 
-- [ ] Create Github repo and Slack channel
-- [ ] Simulate organism properties = create simulated data (1000 rows x 500k cols)
+- [X] Create Github repo and Slack channel
+- [X] Simulate organism properties = create simulated data (1000 rows x 500k cols)
 - [ ] Create f(...) map projection of properties to expression levels
 - [ ] Apply f() to properties for each species (i.e. each row in the simulated data)
 - [ ] Run models: PCA, kernel-PCA / Spectral Clustering, multi-class clustering boosted + bagged, Autoencoder
 - [ ] Model validity, feature importance
 - [ ] Test model(s) on real data = does it work?
-- [ ] Use of ensemble?
+- [ ] Use of ensemble (this means averaging a set of models - may not make sense / be necessary)?
+
+<hr>
 
 We will create a set of response classes in simulated to train on:
 
@@ -30,7 +32,15 @@ E.g. *"likes burgers", "likes mushrooms"*
 
 We are going to use simulated data that represents rows of genes with columns of condition expression. Simulated data comes from a number of parameters of gene-properties-transcript relationships / complex.
 
-Setting 10 target labels (10 multi-class predictor probabilities). 
+Setting 10 target labels (~10 multi-class predictor probabilities).
+
+<hr>
+
+Steps for creating simulation data:
+
+* create 2 _Beta_ probability distributions
+* multiplication of the 2 _Betas_
+* take *Binomial* distribution (*Bernoulli*) of point above
 
 ## 3. Model Approaches
 
