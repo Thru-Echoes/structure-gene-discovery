@@ -6,16 +6,18 @@ import pandas as pd
 import matplotlib.pyplot as plt
 
 from sklearn.cross_validation import train_test_split
+from sklearn.cross_validation import StratifiedShuffleSplit
 from sklearn.metrics import confusion_matrix, classification_report
 from sklearn.preprocessing import StandardScaler
 from sklearn.neighbors import KNeighborsClassifier
 from sklearn.svm import SVC
 from sklearn.decomposition import PCA
+from sklearn.grid_search import GridSearchCV
 
 def generate_rand():
     """Generate 10k x 5 random data"""
     n_cols = 5
-    n_rows = 10000
+    n_rows = 100
     n_class = 10
     trial_x = np.random.rand(n_rows, n_cols)
     trial_y = np.random.random_integers(1, n_class, size = (n_rows, 1))
@@ -53,11 +55,82 @@ def do_knn(x_data):
     """Function to do k-nearest neighbor clustering"""
     return True
 
-def do_lsvm(x_data):
-    """Function to do linear SVM"""
+def cv_lsvm(x_data, y_data, n_class, n_feats):
+    """Function to calculate cross-validation for linear SVM
+
+    Note: code form Scikit-learn
+
+    Input:
+    x_data = x data (features / predictors)
+    y_data = y data (response classes / labels)
+    n_class = number of classes (binary versus multiclass)
+    n_feats = number of features (number of predictors / columns)
+    """
+
+    # Do standard scaling to all data (should do train and project unto test)
+    #sample_scaler = StandardScaler()
+    #x_scaled = sample_scaler.fit_transform(x_data)
+
+    # Grid search CV to search for optimal model parameter C
+    #C_range = np.logspace(-2, 10, 13)
+    C_range = np.logspace(-2, 10, 5)
+    param_grid = dict(C = C_range)
+    cv = StratifiedShuffleSplit(y_data, n_iter = 3, test_size = 0.2, random_state = 0)
+    grid = GridSearchCV(SVC(kernel = "linear"), param_grid = param_grid, cv = cv)
+    grid.fit(x_data, y_data)
+
+    return grid
+
+def do_lsvm(x_data, y_data, bst_model):
+    """Function to run linear SVM
+
+    Input:
+    x_data = x data (features / predictors)
+    y_data = y data (response classes / labels)
+    bst_model = best linear svm model from cross validation function
+    """
+    bst_lsvm = SVC(C = bst_model.best_estimator_.C, kernel = "linear")
+    bst_lsvm_fit = bst_lsvm.fit(x_data, y_data)
     return True
 
-def do_rbfsvm(x_data):
-    """Function to do radial basis function kernel SVM"""
-    
+def cv_rbfsvm(x_data, y_data, n_class, n_feats):
+    """Function to calculate cross-validation for radial basis function kernel SVM
+
+    Note: code form Scikit-learn
+
+    Input:
+    x_data = x data (features / predictors)
+    y_data = y data (response classes / labels)
+    n_class = number of classes (binary versus multiclass)
+    n_feats = number of features (number of predictors / columns)
+    """
+
+    # Do standard scaling to all data (should do train and project unto test)
+    sample_scaler = StandardScaler()
+    x_scaled = sample_scaler.fit_transform(x_data)
+
+    # Grid search CV to search for optimal model parameters C and gamma
+    #C_range = np.logspace(-2, 10, 13)
+    #gamma_range = np.logspace(-9, 3, 13)
+    C_range = np.logspace(-2, 10, 5)
+    gamma_range = np.logspace(-9, 3, 5)
+    param_grid = dict(gamma = gamma_range, C = C_range)
+    # do 80 / 20 - train / test split
+    cv = StratifiedShuffleSplit(y_data, n_iter = 3, test_size = 0.2, random_state = 1)
+    grid = GridSearchCV(SVC(), param_grid = param_grid, cv = cv)
+    grid.fit(x_scaled, y_data)
+
+    return grid
+
+def do_rbfsvm(x_data, y_data, bst_model):
+    """Function to perform Radial Basis Function kernel SVM
+
+    Input:
+    x_data = x data (features / predictors)
+    y_data = y data (response classes / labels)
+    bst_model = best rbfsvm model from cross validation function
+    """
+
+    bst_rbfsvm = SVC(C = bst_model.best_estimator_.C, gamma = bst_model.best_estimator_.gamma)
+    bst_rbfsvm_fit = bst_lsvm.fit(x_data, y_data)
     return True
