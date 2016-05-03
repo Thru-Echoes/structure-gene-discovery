@@ -123,6 +123,8 @@ if __name__ == "__main__":
 	parser.add_argument("-mf", "--multi_fact", help = "Set multiplicative factor for negative binomial distribution", type = int)
 	parser.add_argument("-af", "--add_fact", help = "Set additive factor for negative binomial distribution")
 	parser.add_argument("-nf", "--num_flips", help = "Set number of flips for negative binomial distribution")
+	parser.add_argument("-b1", "--beta_gene_1", help = "Set number of flips for negative binomial distribution")
+	parser.add_argument("-b2", "--beta_gene_2", help = "Set number of flips for negative binomial distribution")
 
 	args = parser.parse_args()
 
@@ -135,6 +137,18 @@ if __name__ == "__main__":
 		n_genes = 1000
 	else:
 		n_genes = int(args.n_genes)
+
+	if args.beta_gene_1 is None:
+		beta_gene_1 = 5
+	else:
+		beta_gene_1 = int(args.beta_gene_1)
+
+	if args.beta_gene_2 is None:
+		beta_gene_2 = 5
+	else:
+		beta_gene_2 = int(args.beta_gene_2)
+
+
 
 	if args.n_species is None:
 		n_species = 100
