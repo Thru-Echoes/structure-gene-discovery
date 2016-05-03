@@ -70,11 +70,11 @@ def property_beta_distribution(n_props):
 	return probs_shape
 
 
-def gene_beta_distribution(n_genes):
+def gene_beta_distribution(n_genes, beta_gene_1, beta_gene_2):
 	# Samples from beta probability distribution
 	# Output: matrix of probabilities (size n_genes)
 
-	gene_probs = beta.rvs(5, 5, size = n_genes)
+	gene_probs = beta.rvs(beta_gene_1, beta_gene_2, size = n_genes)
 	genes = np.array(gene_probs)
 	properties_genes = genes.reshape(n_genes, 1)
 	return properties_genes
@@ -180,7 +180,7 @@ if __name__ == "__main__":
 		species_prop, gp_sign, gp_break = simulate_species_properties(n_props, n_species, n_genes)
 		n_props = len(species_prop.axes[1])
 		properties = property_beta_distribution(n_props)
-		genes = gene_beta_distribution(n_genes)
+		genes = gene_beta_distribution(n_genes, beta_gene_1, beta_gene_2)
 		probability_distribution = np.dot(genes, properties)
 		coin_toss_data = coin_toss(probability_distribution)
 		prop_genes = norm_distribution(coin_toss_data, n_genes, n_props)
