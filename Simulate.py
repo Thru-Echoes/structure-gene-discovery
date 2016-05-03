@@ -22,13 +22,10 @@ import pandas as pd
 import numpy as np
 
 # input parameters
-n_properties = 10
-n_species = 100
-n_group = 3
 
-def simulate_species_properties(n_properties = 10, n_species = 100, n_group = 3):
+def simulate_species_properties(n_properties=10,n_species=100,n_group=3):
     # assign group index randomly
-    gp_sign = pd.DataFrame(np.random.randint(n_group, size = (n_species, n_properties)))
+    gp_sign = pd.DataFrame(np.random.randint(n_group, size=(n_species,n_properties)))
 
     # assign break in the property range randomly
     gp_break = np.random.random([n_properties, n_group, 2])
@@ -37,12 +34,12 @@ def simulate_species_properties(n_properties = 10, n_species = 100, n_group = 3)
     species_prop = gp_sign.copy() # actual intensity of the properties
     for i in range(n_properties):
         for j in range(n_species):
-            group_num = gp_sign.iloc[j, i]
-            species_prop.iloc[j, i] = np.random.uniform(gp_break[i, group_num].min(),
-                                                           gp_break[i, group_num].max())
+            group_num = gp_sign.iloc[j,i]
+            species_prop.iloc[j,i] = np.random.uniform(gp_break[i, group_num].min(),
+                                                           gp_break[i,group_num].max())
 
     return species_prop, gp_sign, gp_break
 
-#if __name__ == "__main__":
-#    species_prop, gp_sign, gp_break = simulate_species_properties()
-#    print('I just run')
+if __name__ == "__main__":
+    species_prop, gp_sign, gp_break = simulate_species_properties()
+    species_prop.to_csv('Species_properites_likelihood.csv')

@@ -19,6 +19,7 @@ def main(args = None):
 
     print("Calling simulate_species_properties()...")
     species_prop, gp_sign, gp_break = simulate_species_properties()
+    #species_prop.to_csv('Species_properites_likelihood.csv')
     print("Finished.\n")
     #print("species_prop: ", species_prop)
     #print("gp_sign: ", gp_sign)

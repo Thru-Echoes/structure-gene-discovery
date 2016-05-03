@@ -1,0 +1,88 @@
+\documentclass[11pt]{article}
+\renewcommand{\baselinestretch}{1.05}
+\usepackage{amsmath,amsthm,verbatim,amssymb,amsfonts,amscd,graphicx,xcolor}
+\usepackage{graphics,epstopdf,hyperref,mathtools,subcaption,tabu}
+
+\topmargin0.0cm
+\headheight0.0cm
+\headsep0.0cm
+\oddsidemargin0.0cm
+\textheight23.0cm
+\textwidth16.5cm
+\footskip1.0cm
+\setlength{\parindent}{0pt}
+\setlength{\parskip}{1em}
+\theoremstyle{plain}
+\newtheorem{theorem}{Theorem}
+\newtheorem{corollary}{Corollary}
+\newtheorem{lemma}{Lemma}
+\newtheorem{proposition}{Proposition}
+\newtheorem*{surfacecor}{Corollary 1}
+\newtheorem{conjecture}{Conjecture} 
+\newtheorem{question}{Question} 
+\theoremstyle{definition}
+\newtheorem{definition}{Definition}
+\DeclareMathOperator{\Tr}{Tr}
+\newcommand{\rank}{\operatorname{rank}}
+
+ \begin{document}
+
+\title{Toward discovering structure in gene expression across properties\\
+\small MDI-Barn Raising}
+\author{Lisa, Harriet, Dave, Yuan, Oliver}
+\maketitle
+
+\section{Simulate Properties across Species}
+Assume there are $K$ properties and $N$ species. For each property $P_i$, the species can be classified into $n=3$ groups each with uniform distribution in a specific range in $[mi, ma] \subset [0, 1]$.
+
+\begin{center}
+\begin{tabular}{ |c|c|c|c|c| }
+\hline
+  & $P_1$ & $P_2$ & ... & $P_K$ \\
+\hline
+$S_1$ & 2 & 0 & ... & 2 \\
+\hline
+$S_2$ & 1 & 2 & ... & 2 \\
+\hline
+... & ... & ... & ... & ... \\
+\hline
+$S_N$ & 0 & 0 & ... & 0 \\
+\hline
+\end{tabular}
+\captionof{table}{Group assignment table for each species in different properties}
+\end{center}
+
+Then, the level of properties expressed are uniformly generated according to their group assignment and the range of values associated to group.
+
+\begin{center}
+\begin{tabular}{ |c|c|c|c|c| }
+\hline
+  & $P_1$ & $P_2$ & ... & $P_K$ \\
+\hline
+$S_1$ & 0.267215  & 0.651385 & ... & 0.158657 \\
+\hline
+$S_2$ & 0.704073  & 0.921734 & ... & 0.115507 \\
+\hline
+... & ... & ... & ... & ... \\
+\hline
+$S_N$ & 0.213306  & 0.921756 & ... & 0.141708 \\
+\hline
+\end{tabular}
+\captionof{table}{Simulated property levels for each specie.}
+\end{center}
+
+\section{Create maps from properties to gene expression level}
+
+
+
+
+
+
+
+
+
+
+
+
+
+\end{document}
