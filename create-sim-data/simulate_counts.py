@@ -91,14 +91,14 @@ def norm_distribution(coin_toss_data, n_genes, n_props):
 
 	effect = random.normal(size=np.size(coin_toss_data))
 	effect_shape = effect.reshape(n_genes,n_props)
-	species_genes = pd.DataFrame(effect_shape * coin_toss_data)
-	return species_genes
+	prop_genes = pd.DataFrame(effect_shape * coin_toss_data)
+	return prop_genes
 
-def get_counts(species_properties, species_genes, multi_fact, add_fact, num_flips):
+def get_counts(species_properties, prop_genes, multi_fact, add_fact, num_flips):
 	# Calculates slope from product of species properties data and distribution sampling
 
-	species_genes_t = species_genes.transpose()
-	property_effects = np.dot(species_properties, species_genes_t)
+	prop_genes_t = prop_genes.transpose()
+	property_effects = np.dot(species_properties, prop_genes_t)
 	# Use exp to ensure that all the counts will be positive
 	expected_counts = np.exp(property_effects * multi_fact + add_fact)
 	# Define negative binomial parameters, n and p
@@ -126,8 +126,13 @@ if __name__ == "__main__":
 
 	args = parser.parse_args()
 
+	if args.output is None:
+		output_filename = "counts"
+	else:
+		output_filename = args.output
+
 	if args.n_genes is None:
-		n_genes = 3
+		n_genes = 1000
 	else:
 		n_genes = int(args.n_genes)
 
@@ -164,9 +169,14 @@ if __name__ == "__main__":
 		genes = gene_beta_distribution(n_genes)
 		probability_distribution = np.dot(genes, properties)
 		coin_toss_data = coin_toss(probability_distribution)
-		species_genes = norm_distribution(coin_toss_data, n_genes, n_props)
-		counts = get_counts(species_prop, species_genes, multi_fact, add_fact, num_flips)
-		print("Finished main - counts: ", counts)
+		prop_genes = norm_distribution(coin_toss_data, n_genes, n_props)
+		counts = get_counts(species_prop, prop_genes, multi_fact, add_fact, num_flips)
+
+		### Write to CSV files
+		# output_filename
+		counts.to_csv(output_filename + "_sim_gene_counts.csv")
+		prop_genes.to_csv(output_filename + "_sim_prop_genes.csv")
+		species_prop.to_csv(output_filename + "_sim_species_prop.csv")
 
 	except IOError as e:
 		print "I/O error({0}): {1}".format(e.errno, e.strerror)
