@@ -5,6 +5,7 @@ import numpy as np
 import pandas as pd
 import matplotlib.pyplot as plt
 
+from sklearn import decomposition
 from sklearn.cross_validation import train_test_split
 from sklearn.cross_validation import StratifiedShuffleSplit
 from sklearn.metrics import confusion_matrix, classification_report
@@ -13,6 +14,11 @@ from sklearn.neighbors import KNeighborsClassifier
 from sklearn.svm import SVC
 from sklearn.decomposition import PCA
 from sklearn.grid_search import GridSearchCV
+
+from keras.models import Sequential
+from keras.layers.core import Dense, Dropout, Activation, Flatten
+from keras.optimizers import RMSprop, SGD
+from keras import backend as K
 
 def generate_rand():
     """Generate 10k x 5 random data"""
@@ -34,22 +40,19 @@ def scale_data(x_data):
     scaled_data = x_data / x_max
     return scaled_data
 
-def do_pca(x_data, n_class, n_feats):
+def do_pca(x_data, n_class):
     """Function to do PCA"""
 
-    run_pca = PCA()
+    run_pca = decomposition.PCA(n_components = n_class)
     pca_fit = run_pca.fit(x_data)
-    #pca_cov = run_pca.get_covariance(x_data)
+    #pca_fit
+    x_pca = run_pca.transform(x_data);
+    #pca_cov = run_pca.get_covariance(x_pca)
     #pca_score = run_pca.score(x_data)
     pca_noise = pca_fit.noise_variance_
     pca_var_explained = pca_fit.explained_variance_ratio_
 
-    print("\n---")
-    print("pca_noise (estimated noise covariance): ", pca_noise)
-    print("pca_var_explained: ", pca_var_explained)
-    print("---\n")
-
-    return run_pca
+    return x_pca, pca_noise, pca_var_explained
 
 def do_knn(x_data):
     """Function to do k-nearest neighbor clustering"""

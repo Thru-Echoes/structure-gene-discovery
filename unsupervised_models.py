@@ -14,7 +14,7 @@ from keras.models import Sequential
 from keras.layers.core import Dense, Dropout, Activation, Flatten
 from keras.optimizers import RMSprop, SGD
 from keras import backend as K
-%matplotlib inline
+#%matplotlib inline
 
 properties = pd.DataFrame.from_csv("data/Species_properites_likelihood.csv")
 
@@ -41,8 +41,13 @@ lm.fit(X, preprocessing.scale(np.array(properties)))
 lm2 = linear_model.LinearRegression()
 lm2.fit(X2, preprocessing.scale(np.array(properties)))
 
-print lm.score(X, preprocessing.scale(np.array(properties)))
-print lm2.score(X2, preprocessing.scale(np.array(properties)))
+see_lm_score = lm.score(X, preprocessing.scale(np.array(properties)))
+see_lm2_score = lm2.score(X2, preprocessing.scale(np.array(properties)))
+
+print
+print("Lin Reg score: ", see_lm_score)
+print
+print("Lin Reg score 2: ", see_lm2_score)
 
 ### R Squared
 
@@ -61,7 +66,7 @@ ae.compile(optimizer = SGD(lr = .01, momentum = .9, decay = 0.001, nesterov = Tr
 
 x = preprocessing.scale(np.array(concentration))
 y = np.array(concentration)
-ae.fit(x, y, batch_size=100, nb_epoch=1000, verbose=1)
+ae.fit(x, y, batch_size = 100, nb_epoch = 10, verbose = 1)
 
 np.mean(x)
 
@@ -70,8 +75,11 @@ code = get_code([x])[0]
 
 lm3 = linear_model.LinearRegression()
 lm3.fit(code, preprocessing.scale(np.array(properties)))
-print lm3.score(code, preprocessing.scale(np.array(properties)))
+see_lm3_score = lm3.score(code, preprocessing.scale(np.array(properties)))
 
+print
+print ("Lin Ref score with autoencoder: ", see_lm3_score)
+print
 
 ##### Ideas about visualization / interpretation
 #
