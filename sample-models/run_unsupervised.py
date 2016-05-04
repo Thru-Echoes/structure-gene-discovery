@@ -22,7 +22,7 @@ from sklearn.preprocessing import Imputer
 from run_random_data import *
 from pca_kmeans import *
 
-def unsuper_linreg(X, properties, concentration):
+def unsuper_linreg(X, properties):
     lm = linear_model.LinearRegression()
     lm.fit(X, preprocessing.scale(np.array(properties)))
     see_lm_score = lm.score(X, preprocessing.scale(np.array(properties)))
@@ -91,12 +91,9 @@ def main_execute():
 
     #concentration = pd.DataFrame.from_csv("../create-sim-data/simulated_counts.csv")
     #concentration = pd.DataFrame.from_csv("create-sim-data/default_parameters_sim_gene_counts.csv")
-    x_arr = pd.DataFrame.from_csv("row_col_normalized_concentration.csv")
-    x_arr = Imputer().fit_transform(x_arr)
 
     #conc_row_sum = concentration.copy()
     #conc_col_sum = concentration.copy()
-
     #for i in range(conc_row_sum.shape[0]):
     #        conc_row_sum.iloc[i, :] = conc_row_sum.iloc[i, :] / conc_row_sum.iloc[i, :].sum()
     #        concentration.iloc[i, :] = concentration.iloc[i, :] / concentration.iloc[i, :].sum()
@@ -104,8 +101,6 @@ def main_execute():
     #for i in range(conc_col_sum.shape[1]):
     #        conc_col_sum.iloc[:, i] = conc_col_sum.iloc[:, i] / conc_col_sum.iloc[:, i].sum()
     #        concentration.iloc[:, i] = concentration.iloc[:, i] / concentration.iloc[:, i].max()
-
-
     #print
     #print("Conc_row_sum: ", conc_row_sum)
     #print
@@ -113,38 +108,70 @@ def main_execute():
     #print
     #print("concentration: ", concentration)
     #print
-
     #x_arr = np.array(concentration)
     #np.savetxt("row_col_normalized_concentration.csv", x_arr, delimiter = ",")
 
-    x_reduced = TruncatedSVD(n_components = 50, random_state = 0).fit_transform(x_arr)
+    #x_arr = pd.DataFrame.from_csv("row_col_normalized_concentration.csv")
+    #x_arr = Imputer().fit_transform(x_arr)
+    #raw = pd.DataFrame.from_csv('data/pseudomonas.tsv', sep='\t').transpose()
+    raw = pd.DataFrame.from_csv('data/pseudomonas.tsv', sep='\t')
+    y = np.array(raw)
+    for i in range(raw.shape[0]):
+        y[i,:] = y[i,:] / np.sum(y[i,:])
+    x = preprocessing.scale(y)
+    x_arr = x.copy()
 
     print
-    print("Finished TruncatedSVD")
-    print
-    print("Trying TSNE...")
+    print("x_arr.shape: ", x_arr.shape)
 
-    tsne_2pc = TSNE(n_components = 2, random_state = 0, verbose = 3).fit_transform(x_reduced)
+    ### Sample Pseudomonas data has 50 PCs to try to recover!
+    x_pca, pca_noise, pca_var_explained = do_pca(x_arr, 50)
+
+    print
+    print("---")
+    #print("x_pca: ", x_pca)
+    print("pca_noise (estimated noise covariance): ", pca_noise)
+    print("pca_var_explained: ", pca_var_explained)
+    print("---")
+    print
+
+    print("Now try PCA to 100 components for t-SNE...")
+
+    x_100pca, pca_100noise, pca_100var_explained = do_pca(x_arr, 100)
+    print
+    print("---")
+    #print("x_150pca: ", x_150pca)
+    print("pca_100noise (estimated noise covariance): ", pca_100noise)
+    print("pca_100var_explained: ", pca_100var_explained)
+    print("---")
+    print
+
+    #unsuper_linreg(x_pca, properties)
+
+    #x_reduced = TruncatedSVD(n_components = 50, random_state = 0).fit_transform(x_arr)
+
+    print
+    print("Trying TSNE with 10 PCs from 100 PCA-PCs...")
+
+    tsne_10pc = TSNE(n_components = 10, random_state = 0, verbose = 3, perplexity = 4).fit_transform(x_100pca)
+
+    print
+    print("Finished tnse-10pc with 100 PCs from PCA.")
+    print
+    print("Trying TSNE with 25 PCs from 100 PCA-PCs...")
+
+    tsne_25pc = TSNE(n_components = 25, random_state = 0, verbose = 3, perplexity = 4).fit_transform(x_100pca)
+
+    print
+    print("Finished tnse-25pc with 100 PCs from PCA.")
+    #print
+
+    #tsne_pca_2pc = TSNE(n_components = 2, random_state = 0, verbose = 3).fit_transform(x_pca)
+    #tsne_2pc = TSNE(n_components = 2, random_state = 0, verbose = 3).fit_transform(x_arr)
+    #tsne_2pc = TSNE(n_components = 2, random_state = 0, verbose = 3).fit_transform(x_reduced)
 
     print
     print("Finished TSNE")
-    print
-    print("Trying clustering on 2 PC of t-SNE...")
-
-
-
-
-    #x_pca, pca_noise, pca_var_explained = do_pca(concentration, 10)
-
-    #print
-    #print("---")
-    #print("x_pca: ", x_pca)
-    #print("pca_noise (estimated noise covariance): ", pca_noise)
-    #print("pca_var_explained: ", pca_var_explained)
-    #print("---")
-    #print
-
-    #unsuper_linreg(x_pca, properties, concentration)
 
     # run_kpca(properties, concentration)
 
