@@ -151,19 +151,27 @@ def main_execute():
     #x_reduced = TruncatedSVD(n_components = 50, random_state = 0).fit_transform(x_arr)
 
     print
-    print("Trying TSNE with 10 PCs from 100 PCA-PCs...")
+    print("Trying TSNE with 2 PCs from 100 PCA-PCs...")
 
-    tsne_10pc = TSNE(n_components = 10, random_state = 0, verbose = 3, perplexity = 4).fit_transform(x_100pca)
+    tsne_default = TSNE(n_components = 2)
+    tsne_default_t = tsne_default.fit_transform(x_arr)
+    tsne_default_df = pd.DataFrame(tsne_default)
+    tsne_default_t_df = pd.DataFrame(tsne_default_t)
+
+    tsne_default_df.to_csv("tsne_default_model.csv")
+    tsne_default_t_df.to_csv("tsne_default_trans_model.csv")
+
+    #tsne_10pc = TSNE(n_components = 2, random_state = 0, verbose = 3, perplexity = 4).fit_transform(x_100pca)
 
     print
     print("Finished tnse-10pc with 100 PCs from PCA.")
     print
-    print("Trying TSNE with 25 PCs from 100 PCA-PCs...")
+    #print("Trying TSNE with 25 PCs from 100 PCA-PCs...")
 
-    tsne_25pc = TSNE(n_components = 25, random_state = 0, verbose = 3, perplexity = 4).fit_transform(x_100pca)
+    #tsne_25pc = TSNE(n_components = 25, random_state = 0, verbose = 3, perplexity = 4).fit_transform(x_100pca)
 
-    print
-    print("Finished tnse-25pc with 100 PCs from PCA.")
+    #print
+    #print("Finished tnse-25pc with 100 PCs from PCA.")
     #print
 
     #tsne_pca_2pc = TSNE(n_components = 2, random_state = 0, verbose = 3).fit_transform(x_pca)
