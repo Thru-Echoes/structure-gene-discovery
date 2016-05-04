@@ -16,6 +16,8 @@ from keras.layers.core import Dense, Dropout, Activation, Flatten
 from keras.optimizers import RMSprop, SGD
 from keras import backend as K
 
+import matplotlib.cm as cm
+
 from sklearn.manifold import TSNE
 from sklearn.preprocessing import Imputer
 
@@ -125,7 +127,7 @@ def main_execute():
     print("x_arr.shape: ", x_arr.shape)
 
     ### Sample Pseudomonas data has 50 PCs to try to recover!
-    x_pca, pca_noise, pca_var_explained = do_pca(x_arr, 50)
+    x_pca, pca_noise, pca_var_explained = do_pca(x_arr, 10)
 
     print
     print("---")
@@ -135,37 +137,59 @@ def main_execute():
     print("---")
     print
 
-    print("Now try PCA to 100 components for t-SNE...")
+    #print("Now try PCA to 100 components for t-SNE...")
 
-    x_100pca, pca_100noise, pca_100var_explained = do_pca(x_arr, 100)
-    print
-    print("---")
+    #x_100pca, pca_100noise, pca_100var_explained = do_pca(x_arr, 100)
+    #print
+    #print("---")
     #print("x_150pca: ", x_150pca)
-    print("pca_100noise (estimated noise covariance): ", pca_100noise)
-    print("pca_100var_explained: ", pca_100var_explained)
-    print("---")
-    print
+    #print("pca_100noise (estimated noise covariance): ", pca_100noise)
+    #print("pca_100var_explained: ", pca_100var_explained)
+    #print("---")
+    #print
 
     #unsuper_linreg(x_pca, properties)
 
     #x_reduced = TruncatedSVD(n_components = 50, random_state = 0).fit_transform(x_arr)
 
     print
-    print("Trying TSNE with 2 PCs from 100 PCA-PCs...")
+    print("Trying TSNE with 2 PCs from 10 PCA-PCs...")
 
-    tsne_default = TSNE(n_components = 2)
-    tsne_default_t = tsne_default.fit_transform(x_arr)
-    tsne_default_df = pd.DataFrame(tsne_default)
-    tsne_default_t_df = pd.DataFrame(tsne_default_t)
+    #tsne_default = TSNE(n_components = 2)
+    #tsne_default_t = tsne_default.fit_transform(x_arr)
 
-    tsne_default_df.to_csv("tsne_default_model.csv")
-    tsne_default_t_df.to_csv("tsne_default_trans_model.csv")
+    tsne_10pca = TSNE(n_components = 2)
+    tsne_10pca_t = tsne_10pca.fit_transform(x_pca)
+
+    print
+    print("tsne_10pca_t: ", tsne_10pca_t)
+    print
+    #print("tnse_default_t.embedding_: ", tsne_default_t.embedding_)
+    #print("tsne_10pca_t[:, 0]: ", tsne_10pca_t[:, 0])
+    #print
+    #print("tsne_10pca_t[:, 1]: ", tsne_10pca_t[:, 1])
+    print
+
+    tsne_10pca_save_x = pd.DataFrame(tsne_10pca_t[:, 0])
+    tsne_10pca_save_y = pd.DataFrame(tsne_10pca_t[:, 1])
+
+    tsne_10pca_save_x.to_csv("sample-models/tsne_10pca_x.csv")
+    tsne_10pca_save_y.to_csv("sample-models/tsne_10pca_y.csv")
+
+    ### Save t-SNE plots in 2D
+    #plt.scatter(tsne_default_t[:, 0], tsne_default_t[:, 1])
+    #plt.savefig("sample-models/tsne_default_2d.png")
+
+    plot_colors = cm.rainbow(np.linspace(0, 1, 50))
+
+    plt.scatter(tsne_10pca_t[:, 0], tsne_10pca_t[:, 1], color = plot_colors)
+    plt.savefig("sample-models/tsne_10pca_2d.png")
 
     #tsne_10pc = TSNE(n_components = 2, random_state = 0, verbose = 3, perplexity = 4).fit_transform(x_100pca)
 
-    print
-    print("Finished tnse-10pc with 100 PCs from PCA.")
-    print
+    #print
+    #print("Finished tnse-10pc with 100 PCs from PCA.")
+    #print
     #print("Trying TSNE with 25 PCs from 100 PCA-PCs...")
 
     #tsne_25pc = TSNE(n_components = 25, random_state = 0, verbose = 3, perplexity = 4).fit_transform(x_100pca)
