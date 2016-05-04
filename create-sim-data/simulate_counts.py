@@ -127,6 +127,7 @@ if __name__ == "__main__":
 	parser.add_argument("-b2", "--beta_gene_2", help = "Set beta distribution b value for genes")
 	parser.add_argument("-p1", "--beta_prop_1", help = "Set beta distribution a value for props")
 	parser.add_argument("-p2", "--beta_prop_2", help = "Set beta distribution a value for props")
+	parser.add_argument("-ngp", "--n_group", help = "number of phylogenetic groups")
 
 	args = parser.parse_args()
 
@@ -160,6 +161,10 @@ if __name__ == "__main__":
 	else:
 		beta_prop_2 = int(args.beta_prop_2)
 
+	if args.n_group is None:
+		n_group = 3
+	else:
+		n_group = int(args.n_group)
 
 	if args.n_species is None:
 		n_species = 100
@@ -188,7 +193,7 @@ if __name__ == "__main__":
 
 	try:
 		#species_properties = read_input(input_file)
-		species_prop, gp_sign, gp_break = simulate_species_properties(n_props, n_species, n_genes)
+		species_prop, gp_sign, gp_break = simulate_species_properties(n_props, n_species, n_group)
 		n_props = len(species_prop.axes[1])
 		properties = property_beta_distribution(n_props, beta_prop_1, beta_prop_2)
 		genes = gene_beta_distribution(n_genes, beta_gene_1, beta_gene_2)

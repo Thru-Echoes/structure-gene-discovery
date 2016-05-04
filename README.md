@@ -12,9 +12,15 @@ Have a set of organisms. Have rows of genes. Columns of conditions / specificati
 
 - [X] Create Github repo and Slack channel
 - [X] Simulate organism properties = create simulated data (1000 rows x 500k cols)
-- [ ] Create f(...) map projection of properties to expression levels
-- [ ] Apply f() to properties for each species (i.e. each row in the simulated data)
-- [ ] Run models: PCA, kernel-PCA / Spectral Clustering, multi-class clustering boosted + bagged, Autoencoder
+- [X] Create f(...) map projection of properties to expression levels
+- [X] Apply f() to properties for each species (i.e. each row in the simulated data)
+- [ ] Finalize simulated data w.r.t. biological expectations 
+- [ ] Run models: PCA, kernel-PCA / Spectral Clustering, multi-class clustering boosted + bagged, Autoencoder through AWC
+- [ ] Test models w/ Pseudomonas data from Greene Lab 
+- [ ] Add denoisey to Autoencorder
+- [ ] Tune kernel PCA
+- [ ] Try clustering (e.g. Spectral)
+- [ ] Run t-SNE for data viz and comparison
 - [ ] Model validity, feature importance
 - [ ] Test model(s) on real data = does it work?
 - [ ] Use of ensemble (this means averaging a set of models - may not make sense / be necessary)?
