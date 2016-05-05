@@ -123,6 +123,7 @@ def main_execute():
     x = preprocessing.scale(y)
     x_arr = x.copy()
 
+    """
     ae_node_assign = pd.DataFrame.from_csv('sample-models/only_node_assignment_per_gene_ae.csv', sep = ',')
     ae_nodes = np.array(ae_node_assign)
 
@@ -133,12 +134,36 @@ def main_execute():
     ae_weights_raw_t = pd.DataFrame.from_csv('pseudomonas/ae_weights.csv', sep = ',').transpose()
     x_ae_weights = np.array(ae_weights_raw)
     x_ae_weights_t = np.array(ae_weights_raw_t)
+    """
+
+    ae_raw = pd.DataFrame.from_csv('pseudomonas/ae_codes.csv', sep=',')
+    x_ae_codes = np.array(ae_raw)
+
+    sample_labels = pd.read_csv('data/pseudo_sample_names.csv', sep = ',', header = None)
+    np_labels = np.array(sample_labels)
+
+    sample_colors = cm.rainbow(np.linspace(0, 1, 950))
+
+    print
+    print("Running t-SNE with the AE weight data (950 species x 50 nodes)...")
+
+    tsne_ae_species = TSNE(n_components = 2).fit_transform(x_ae_codes)
+
+    fig, axes = plt.subplots(1)
+    fig.set_size_inches(30, 30)
+    #plt.scatter(tsne_ae_species[:, 0], tsne_ae_species[:, 1], edgecolors='none')
+    plt.scatter(tsne_ae_species[:, 0], tsne_ae_species[:, 1], c = sample_colors, edgecolors='none')
+    #plt.colorbar(ticks = range(950))
+    plt.show()
+    plt.savefig("cluster-and-viz/may5_tsne_samples_by_nodes.png")
+    plt.clf()
 
     #ae_y = np.array(ae_raw)
     #for i in range(ae_raw.shape[0]):
     #        ae_y[i,:] = ae_y[i,:] / np.sum(ae_y[i,:])
     #ae_x = preprocessing.scale(ae_y)
     #x_ae = ae_x.copy()
+
 
     ########################################################################
     ########################################################################
@@ -228,8 +253,8 @@ def main_execute():
     plt.colorbar(ticks = range(50))
     plt.savefig("cluster-and-viz/may4_tsne_ae_weights_t_2d.png")
     plt.clf()
-    """
-    
+
+
     print
     print("Now we are actually running t-SNE with the AE weight data (50 nodes x 5549 genes)...")
 
@@ -249,6 +274,7 @@ def main_execute():
     plt.colorbar(ticks = range(50))
     plt.savefig("sample-models/may4_tsne_ae_codes_2d.png")
     plt.clf()
+    """
 
     ########################################################################
     ########################################################################
