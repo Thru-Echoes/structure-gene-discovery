@@ -45,4 +45,20 @@ I used *XGBoost* - random forest with boosting and bagging. Can do 5-Fold Cross-
 
 ## 4. Results and Discussions
 
-For t-SNE visualizations by itself and with PCA we did not find great clustering. This was expected because PCA does not perform very well on clustering this data! 
+For t-SNE visualizations by itself and with PCA we did not find great clustering. This was expected because PCA does not perform very well on clustering this data!
+
+There are now visualizations of the following:
+
+* <strong>PCA into 50 dimensions and then scatter plot of all genes in 2-dimensions with t-SNE</strong> to try to visualize the clustering of those 50 PCs as matching the 50 hidden nodes from Autoencoding (bad results as expected since PCA does not do well on this data)
+
+* <strong>t-SNE directly on raw data to try to find clustering - scatter plot of all genes in 2-dimensions</strong> - this is also not good as expected (since PCA did not work well)
+
+* <strong>2-dimensional plot of all nodes from hidden layer (Autoencoder) clustered with t-SNE</strong> - this is actually two plots: one for the Autoencoder weights and another for the Autoencoder codings. In these plots you can start to see some nodes (some hidden layers) that really stand out from the rest - **such as node 18** - which probably has a major influence on genetic expression
+
+And we also have visualizations of the following *post-structure-discovery* methods:
+
+* <strong>Feature importance of nodes (from hidden layers of Autoencoder) as predictors</strong> for classifying genes to their respective nodes of highest weight - through random forest multi-classification - this means I assigned each gene a label that corresponded to the node that had the highest weight value for it
+
+* <strong>Feature importance of samples (from original dataset of 950 samples / predictors)</strong> for classifying genes to their respective nodes of highest weight - through random forest multi-classification and then boosted classification methods (*GBM*)
+
+<strong>NOTE:</strong> feature importance is measured as the gain in reducing misclassifications per feature / predictor / column. So this means feature importance is a measure of (generally) how much better any specific feature is at making the entire model predict the nodes / classes of the genes. 
