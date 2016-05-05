@@ -114,7 +114,7 @@ def main_execute():
     #x_arr = pd.DataFrame.from_csv("row_col_normalized_concentration.csv")
     #x_arr = Imputer().fit_transform(x_arr)
     #raw = pd.DataFrame.from_csv('data/pseudomonas.tsv', sep='\t').transpose()
-    raw = pd.DataFrame.from_csv('data/pseudomonas.tsv', sep='\t')
+    raw = pd.DataFrame.from_csv('/mnt/pseudomonas.tsv', sep='\t')
     y = np.array(raw)
     for i in range(raw.shape[0]):
         y[i,:] = y[i,:] / np.sum(y[i,:])
@@ -155,11 +155,16 @@ def main_execute():
 
     tsne_default = TSNE(n_components = 2)
     tsne_default_t = tsne_default.fit_transform(x_arr)
-    tsne_default_df = pd.DataFrame(tsne_default)
-    tsne_default_t_df = pd.DataFrame(tsne_default_t)
+    
+    plt.scatter(tsne_default_t[:, 0], tsne_default_t[:, 1])
+    plt.savefig("tsne_default_2d.png")
 
-    tsne_default_df.to_csv("tsne_default_model.csv")
-    tsne_default_t_df.to_csv("tsne_default_trans_model.csv")
+    #tsne_default_df = pd.DataFrame(tsne_default)
+    #tsne_default_t_df = pd.DataFrame(tsne_default_t)
+
+    
+    #tsne_default_df.to_csv("tsne_default_model.csv")
+    #tsne_default_t_df.to_csv("tsne_default_trans_model.csv")
 
     #tsne_10pc = TSNE(n_components = 2, random_state = 0, verbose = 3, perplexity = 4).fit_transform(x_100pca)
 
