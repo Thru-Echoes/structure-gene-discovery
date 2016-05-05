@@ -16,6 +16,8 @@ from keras.layers.core import Dense, Dropout, Activation, Flatten
 from keras.optimizers import RMSprop, SGD
 from keras import backend as K
 
+import matplotlib.cm as cm
+
 from sklearn.manifold import TSNE
 from sklearn.preprocessing import Imputer
 
@@ -121,9 +123,26 @@ def main_execute():
     x = preprocessing.scale(y)
     x_arr = x.copy()
 
-    print
-    print("x_arr.shape: ", x_arr.shape)
+    ae_node_assign = pd.DataFrame.from_csv('sample-models/only_node_assignment_per_gene_ae.csv', sep = ',')
+    ae_nodes = np.array(ae_node_assign)
 
+    ae_raw = pd.DataFrame.from_csv('pseudomonas/ae_codes.csv', sep=',').transpose()
+    x_ae_codes = np.array(ae_raw)
+
+    ae_weights_raw = pd.DataFrame.from_csv('pseudomonas/ae_weights.csv', sep = ',')
+    ae_weights_raw_t = pd.DataFrame.from_csv('pseudomonas/ae_weights.csv', sep = ',').transpose()
+    x_ae_weights = np.array(ae_weights_raw)
+    x_ae_weights_t = np.array(ae_weights_raw_t)
+
+    #ae_y = np.array(ae_raw)
+    #for i in range(ae_raw.shape[0]):
+    #        ae_y[i,:] = ae_y[i,:] / np.sum(ae_y[i,:])
+    #ae_x = preprocessing.scale(ae_y)
+    #x_ae = ae_x.copy()
+
+    ########################################################################
+    ########################################################################
+    """
     ### Sample Pseudomonas data has 50 PCs to try to recover!
     x_pca, pca_noise, pca_var_explained = do_pca(x_arr, 50)
 
@@ -135,24 +154,37 @@ def main_execute():
     print("---")
     print
 
-    print("Now try PCA to 100 components for t-SNE...")
 
-    x_100pca, pca_100noise, pca_100var_explained = do_pca(x_arr, 100)
+    tsne_default = TSNE(n_components = 2).fit_transform(x_arr)
+
+    plt.scatter(tsne_default[:, 0], tsne_default[:, 1], c = ae_nodes)
+    plt.colorbar(ticks = range(50))
+    plt.savefig("sample-models/may4_tsne_default_2d.png")
+    #plt.show()
+
+    plt.clf()
+
+    tsne_pca = TSNE(n_components = 2).fit_transform(x_pca)
+    plt.scatter(tsne_pca[:, 0], tsne_pca[:, 1], c = ae_nodes)
+    plt.colorbar(ticks = range(50))
+    plt.savefig("sample-models/may4_tsne_50pca_2d.png")
+    #plt.show()
+
+    plt.clf()
+    """
+    ########################################################################
+    # Now break up t-SNE to plot 1k genes at a time (5 plots)
+    ########################################################################
+    """
+    plt.scatter(tsne_default[0:999, 0], tsne_default[0:999, 1], c = ae_nodes[0:999])
+    plt.colorbar(ticks = range(50))
+    plt.savefig("sample-models/may4_tsne_fisrt1k_2d.png")
+    plt.clf()
+
     print
-    print("---")
-    #print("x_150pca: ", x_150pca)
-    print("pca_100noise (estimated noise covariance): ", pca_100noise)
-    print("pca_100var_explained: ", pca_100var_explained)
-    print("---")
-    print
+    print("Finished first 1k...")
 
-    #unsuper_linreg(x_pca, properties)
-
-    #x_reduced = TruncatedSVD(n_components = 50, random_state = 0).fit_transform(x_arr)
-
-    print
-    print("Trying TSNE with 2 PCs from 100 PCA-PCs...")
-
+<<<<<<< HEAD
     tsne_default = TSNE(n_components = 2)
     tsne_default_t = tsne_default.fit_transform(x_arr)
     
@@ -165,31 +197,111 @@ def main_execute():
     
     #tsne_default_df.to_csv("tsne_default_model.csv")
     #tsne_default_t_df.to_csv("tsne_default_trans_model.csv")
-
-    #tsne_10pc = TSNE(n_components = 2, random_state = 0, verbose = 3, perplexity = 4).fit_transform(x_100pca)
+=======
+    plt.scatter(tsne_default[1000:1999, 0], tsne_default[1000:1999, 1], c = ae_nodes[1000:1999])
+    plt.colorbar(ticks = range(50))
+    plt.savefig("sample-models/may4_tsne_second1k_2d.png")
+    plt.clf()
 
     print
-    print("Finished tnse-10pc with 100 PCs from PCA.")
+    print("Finished second 1k...")
+>>>>>>> 7ce053820ce87bbc45b6a1c029e47da7eb12c605
+
+    plt.scatter(tsne_default[2000:2999, 0], tsne_default[2000:2999, 1], c = ae_nodes[2000:2999])
+    plt.colorbar(ticks = range(50))
+    plt.savefig("sample-models/may4_tsne_third1k_2d.png")
+    plt.clf()
+
     print
-    #print("Trying TSNE with 25 PCs from 100 PCA-PCs...")
+    print("Finished third 1k...")
 
-    #tsne_25pc = TSNE(n_components = 25, random_state = 0, verbose = 3, perplexity = 4).fit_transform(x_100pca)
+    plt.scatter(tsne_default[3000:3999, 0], tsne_default[3000:3999, 1], c = ae_nodes[3000:3999])
+    plt.colorbar(ticks = range(50))
+    plt.savefig("sample-models/may4_tsne_fourth1k_2d.png")
+    plt.clf()
 
-    #print
-    #print("Finished tnse-25pc with 100 PCs from PCA.")
-    #print
 
-    #tsne_pca_2pc = TSNE(n_components = 2, random_state = 0, verbose = 3).fit_transform(x_pca)
-    #tsne_2pc = TSNE(n_components = 2, random_state = 0, verbose = 3).fit_transform(x_arr)
-    #tsne_2pc = TSNE(n_components = 2, random_state = 0, verbose = 3).fit_transform(x_reduced)
+    print
+    print("Finished fourth 1k...")
+
+    plt.scatter(tsne_default[4000:5549, 0], tsne_default[4000:5549, 1], c = ae_nodes[4000:5549])
+    plt.colorbar(ticks = range(50))
+    plt.savefig("sample-models/may4_tsne_last1549_2d.png")
+    plt.clf()
+
+    """
+    ########################################################################
+    # Now use AE codings to do t-SNE visualization
+    ########################################################################
+    np_50colors = np.linspace(0, 50, 50)
+    """
+    print
+    print("Now we are actually running t-SNE with the AE weight data (5549 genes x 50 nodes)...")
+
+    tsne_ae_weights_t = TSNE(n_components = 2).fit_transform(x_ae_weights_t)
+    plt.scatter(tsne_ae_weights_t[:, 0], tsne_ae_weights_t[:, 1], c = ae_nodes)
+    plt.colorbar(ticks = range(50))
+    plt.savefig("cluster-and-viz/may4_tsne_ae_weights_t_2d.png")
+    plt.clf()
+    """
+    
+    print
+    print("Now we are actually running t-SNE with the AE weight data (50 nodes x 5549 genes)...")
+
+    #plot_colors = cm.rainbow(np.linspace(0, 1, 50))
+
+    tsne_ae_weights = TSNE(n_components = 2).fit_transform(x_ae_weights)
+    plt.scatter(tsne_ae_weights[:, 0], tsne_ae_weights[:, 1], c = np_50colors)
+    plt.colorbar(ticks = range(50))
+    plt.savefig("sample-models/may4_tsne_ae_weights_not_t_2d.png")
+    plt.clf()
+
+    print
+    print("Now we are actually running t-SNE with the AE codings data (50 nodes x 950 samples)...")
+
+    tsne_ae_codes = TSNE(n_components = 2).fit_transform(x_ae_codes)
+    plt.scatter(tsne_ae_codes[:, 0], tsne_ae_codes[:, 1], c = np_50colors)
+    plt.colorbar(ticks = range(50))
+    plt.savefig("sample-models/may4_tsne_ae_codes_2d.png")
+    plt.clf()
+
+    ########################################################################
+    ########################################################################
+
+    #unsuper_linreg(x_pca, properties)
+
+    #x_reduced = TruncatedSVD(n_components = 50, random_state = 0).fit_transform(x_arr)
+
+    #tsne_default = TSNE(n_components = 2)
+    #tsne_default_t = tsne_default.fit_transform(x_arr)
+
+    #tsne_10pca = TSNE(n_components = 2)
+    #tsne_10pca_t = tsne_10pca.fit_transform(x_pca)
+
+    #tsne_10pca_save_x = pd.DataFrame(tsne_10pca_t[:, 0])
+    #tsne_10pca_save_y = pd.DataFrame(tsne_10pca_t[:, 1])
+
+    #tsne_10pca_save_x.to_csv("sample-models/tsne_10pca_x.csv")
+    #tsne_10pca_save_y.to_csv("sample-models/tsne_10pca_y.csv")
+
+    ### Save t-SNE plots in 2D
+    #plt.scatter(tsne_default_t[:, 0], tsne_default_t[:, 1])
+    #plt.savefig("sample-models/tsne_default_2d.png")
+
+    #plot_colors = cm.rainbow(np.linspace(0, 1, 50))
+
+    #plt.scatter(tsne_10pca_t[:, 0], tsne_10pca_t[:, 1], color = plot_colors)
+    #plt.savefig("sample-models/tsne_10pca_2d.png")
 
     print
     print("Finished TSNE")
+
+    ########################################################################
+    ########################################################################
 
     # run_kpca(properties, concentration)
 
     # run_autoencode(properties, concentration)
 
     # run_tsne(properties, concentration)
-
     return True
