@@ -62,4 +62,26 @@ for (j in 1:nrow(pseudo_df)) {
 num_genes_per_pathway_df <- data.frame(gene_count = num_genes_per_pathway)
 num_pathways_per_gene_df <- data.frame(pathway_count = num_pathways_per_gene)
 
+write.csv(num_genes_per_pathway_df, file = "../../../../pseudomon_num_genes_per_pathways.csv")
+write.csv(num_pathways_per_gene_df, file = "../../../../pseudomon_num_pathways_per_gene.csv")
 
+#### Now check out the weights 
+
+# ae_weights.csv
+mod_ae_weights <- read.csv(file.choose())
+ae_node_per_gene <- vector() 
+ae_node_weight_per_gene <- vector() 
+for (i in 1:ncol(mod_ae_weights)) {
+#for (i in 1:ncol(mod_ae_weights[, 1:10])) {
+    
+    max_weight_per_gene <- max(mod_ae_weights[, i])
+    ae_node_weight_per_gene <- c(ae_node_weight_per_gene, max_weight_per_gene)
+    
+    this_genes_node <- which(mod_ae_weights[, i] == max_weight_per_gene)
+    ae_node_per_gene <- c(ae_node_per_gene, this_genes_node)
+}
+
+node_assignments_per_gene <- data.frame(best_node = ae_node_per_gene, best_ae_weight = ae_node_weight_per_gene)
+head(node_assignments_per_gene)
+
+write.csv(node_assignments_per_gene, file = "../../../../best_node_per_gene_via_ae.csv")
