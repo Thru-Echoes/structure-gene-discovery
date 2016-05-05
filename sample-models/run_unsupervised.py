@@ -116,7 +116,7 @@ def main_execute():
     #x_arr = pd.DataFrame.from_csv("row_col_normalized_concentration.csv")
     #x_arr = Imputer().fit_transform(x_arr)
     #raw = pd.DataFrame.from_csv('data/pseudomonas.tsv', sep='\t').transpose()
-    raw = pd.DataFrame.from_csv('data/pseudomonas.tsv', sep='\t')
+    raw = pd.DataFrame.from_csv('/mnt/pseudomonas.tsv', sep='\t')
     y = np.array(raw)
     for i in range(raw.shape[0]):
         y[i,:] = y[i,:] / np.sum(y[i,:])
@@ -184,6 +184,20 @@ def main_execute():
     print
     print("Finished first 1k...")
 
+<<<<<<< HEAD
+    tsne_default = TSNE(n_components = 2)
+    tsne_default_t = tsne_default.fit_transform(x_arr)
+    
+    plt.scatter(tsne_default_t[:, 0], tsne_default_t[:, 1])
+    plt.savefig("tsne_default_2d.png")
+
+    #tsne_default_df = pd.DataFrame(tsne_default)
+    #tsne_default_t_df = pd.DataFrame(tsne_default_t)
+
+    
+    #tsne_default_df.to_csv("tsne_default_model.csv")
+    #tsne_default_t_df.to_csv("tsne_default_trans_model.csv")
+=======
     plt.scatter(tsne_default[1000:1999, 0], tsne_default[1000:1999, 1], c = ae_nodes[1000:1999])
     plt.colorbar(ticks = range(50))
     plt.savefig("sample-models/may4_tsne_second1k_2d.png")
@@ -191,6 +205,7 @@ def main_execute():
 
     print
     print("Finished second 1k...")
+>>>>>>> 7ce053820ce87bbc45b6a1c029e47da7eb12c605
 
     plt.scatter(tsne_default[2000:2999, 0], tsne_default[2000:2999, 1], c = ae_nodes[2000:2999])
     plt.colorbar(ticks = range(50))
