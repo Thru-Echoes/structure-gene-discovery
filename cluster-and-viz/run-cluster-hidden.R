@@ -10,6 +10,8 @@ xHidden <- t(xHidden)
 ### Brind in 5549 genes x 950 sample data 
 xSamples <- read.csv(file.choose(), sep = '\t')
 
+xFullData <- read.csv(file.choose())
+
 ### If data is "list" and need to create numeric: 
 naMatrix <- matrix(data = NA, nrow = dim(xSamples)[1], ncol = dim(xSamples)[2])
 for (i in 1:dim(xSamples)[2]) { 
@@ -52,16 +54,16 @@ samples_ae_codings.test <- samples_ae_codings[-sampleCodings.indx, ]
 
 # Try to cluster species from Pseudomon (950 samples x 50 Autoencoder node codings)
 # Run unsupervised random forests 
-rf.samples.codings.unsup <- unsupervised.randomUniformForest(samples_ae_codings)
+rf.xMMData.reduced.unsup <- unsupervised.randomUniformForest(xMMData.reduced[, 1:20000])
 
 # Then run supervised RF 
-rf.samples.codings.supervised <- as.supervised(rf.samples.codings.unsup, samples_ae_codings)
+rf.xMMData.reduced.supervised <- as.supervised(rf.xMMData.reduced.unsup, xMMData.reduced[, 1:20000])
 
 # Importance plot 
-rf.samples.codings.importance <- importance(rf.samples.codings.supervised, Xtest = samples_ae_codings)
+rf.xMMData.reduced.importance <- importance(rf.xMMData.reduced.supervised, Xtest = xMMData.reduced[, 20000])
 
 # Cluster analysis 
-rf.samples.codings.clusterAnalysis <- clusterAnalysis(rf.samples.codings.importance, samples_ae_codings)
+rf.samples.codings.clusterAnalysis <- clusterAnalysis(rf.samples.codings.importance, xMMData.reduced)
 
 
 

@@ -167,14 +167,48 @@ Importance:    0.1172 0.0968 0.0920 0.0839 0.0673 0.0542 0.0324 0.0209 0.0201 0.
 
 <hr>
 
-### 5.3 Feature Importance - 950 samples x 50 AE Node Codings
+### 5.3 Feature Importance - 53 species (rows) x 81k RNAs (cols)
+
+This is the real data collected from a ton of data cleaning and creation time (big shout out to Lisa and Harriet!)
+
+<strong>NOTE:</strong> this was a quick trial run of unsupervised RF on 53 species and **only** 20k columns (the first 20k columns).
 
 #### 5.3.1 Global Variable Importance:
 
 Important in terms of information gain when trying to use these features to predict labels:
 
 ```
-
+        variables score class class.frequency percent percent.importance
+    1  OG_336808     4     3            0.62  100.00                  1
+    2  OG_154639     3     3            0.71   88.32                  1
+    3  OG_336361     3     1            0.50   70.44                  1
+    4  OG_051751     3     1            0.50   68.88                  1
+    5  OG_295085     2     3            0.67   66.03                  1
+    6  OG_217123     2     3            0.50   58.80                  1
+    7  OG_103079     2  <NA>              NA   54.94                  1
+    8  OG_138279     2     3            0.40   54.55                  1
+    9  OG_226526     2     1            0.50   54.54                  1
+    10 OG_330880     2     3            0.50   48.02                  1
+    11 OG_036823     2     2            0.50   46.24                  1
+    12 OG_102182     2     3            0.75   43.25                  0
+    13 OG_291398     2     2            0.50   42.25                  0
+    14 OG_113519     2     1            0.50   41.03                  0
+    15 OG_301231     1     3            1.00   40.75                  0
+    16 OG_000275     1     4            0.67   39.67                  0
+    17 OG_093574     1     4            0.67   38.75                  0
+    18 OG_110301     1     2            0.67   37.87                  0
+    19 OG_200230     1     2            0.50   37.73                  0
+    20 OG_105836     1     3            0.57   36.44                  0
+    21 OG_228850     1     1            0.33   36.07                  0
+    22 OG_062277     1     1            0.50   36.04                  0
+    23 OG_340681     1     3            0.50   35.07                  0
+    24 OG_223015     1     2            1.00   34.62                  0
+    25 OG_301356     1  <NA>              NA   34.19                  0
+    26 OG_081208     1     2            0.50   34.02                  0
+    27 OG_104248     1  <NA>              NA   32.77                  0
+    28 OG_338206     1     3            0.50   32.54                  0
+    29 OG_226712     1     1            0.50   30.76                  0
+    30 OG_262173     1     1            0.33   30.53                  0
 ```
 
 #### 5.3.2 Local Variable Importance:
@@ -182,18 +216,42 @@ Important in terms of information gain when trying to use these features to pred
 The 10 most important variables (i.e. genes) and their relative amount of interactions with other variables (i.e. genes):
 
 ```
+    OG_105836 OG_301231 OG_336808 OG_081208 OG_180181 OG_217123 OG_142060 OG_038261 OG_051751 OG_102182
+    OG_105836       0.2570    0.2127    0.1685    0.1574    0.1574    0.1574    0.1353    0.1243    0.1243    0.1243
+    OG_340647       0.2098    0.1656    0.1213    0.1103    0.1103    0.1103    0.0882    0.0771    0.0771    0.0771
+    OG_089133       0.1721    0.1278    0.0836    0.0725    0.0725    0.0725    0.0504    0.0394    0.0394    0.0394
+    OG_180181       0.1721    0.1278    0.0836    0.0725    0.0725    0.0725    0.0504    0.0394    0.0394    0.0394
+    OG_336808       0.1721    0.1278    0.0836    0.0725    0.0725    0.0725    0.0504    0.0394    0.0394    0.0394
+    OG_340681       0.1721    0.1278    0.0836    0.0725    0.0725    0.0725    0.0504    0.0394    0.0394    0.0394
+    OG_154639       0.1626    0.1184    0.0742    0.0631    0.0631    0.0631    0.0410    0.0299    0.0299    0.0299
+    OG_285581       0.1626    0.1184    0.0742    0.0631    0.0631    0.0631    0.0410    0.0299    0.0299    0.0299
+    OG_301231       0.1626    0.1184    0.0742    0.0631    0.0631    0.0631    0.0410    0.0299    0.0299    0.0299
+    OG_336361       0.1626    0.1184    0.0742    0.0631    0.0631    0.0631    0.0410    0.0299    0.0299    0.0299
+    avg1rstOrder    0.1681    0.1239    0.0796    0.0686    0.0686    0.0686    0.0464    0.0354    0.0354    0.0354
 
 ```
 
 #### 5.3.3 Variable Importance on gene-to-gene interactions:
 
 ```
-
+    OG_105836 OG_301231 OG_340647 OG_336808 OG_180181 OG_340681 OG_089133 OG_142060 OG_154639 OG_285581
+   0.2251    0.1005    0.0867    0.0803    0.0743    0.0511    0.0434    0.0404    0.0399    0.0369
 ```
 
 #### 5.3.4 Variable Importance for labels:
 
+RF found 4 labels to classify genes into (i.e. 4 main pathways).
 
 ```
-
+            Class 1 Class 2 Class 3 Class 4
+OG_081208    0.00    0.50    0.00    0.11
+OG_301231    0.00    0.00    0.36    0.05
+OG_105836    0.12    0.25    0.27    0.26
+OG_217123    0.25    0.00    0.05    0.05
+OG_138279    0.00    0.25    0.00    0.00
+OG_180181    0.00    0.00    0.00    0.21
+OG_336808    0.12    0.00    0.18    0.00
+OG_336361    0.12    0.00    0.00    0.00
+OG_051751    0.12    0.00    0.00    0.00
+OG_340686    0.12    0.00    0.00    0.00
 ```
